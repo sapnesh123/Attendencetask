@@ -26,9 +26,9 @@ if (!fs.existsSync(logsDir)) {
 }
 
 // ─── Allowed Origins ─────────────────────────────────────────────────────────
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'https://hrms-pannel.onrender.com,http://localhost:3002,http://localhost:5173,http://localhost:3009,http://127.0.0.1:3009')
-  .split(',')
-  .map((o) => o.trim());
+// const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'https://hrms-pannel.onrender.com,http://localhost:3002,http://localhost:5173,http://localhost:3009,http://127.0.0.1:3009')
+//   .split(',')
+//   .map((o) => o.trim());
 
 // ─── Multer setup ─────────────────────────────────────────────────────────────
 const storage = multer.diskStorage({
@@ -46,22 +46,32 @@ global.upload = upload;
 
 const app = express();
 
-const corsOptions = {
-  origin: (origin, callback) => {
-    // Allow requests with no origin (e.g. mobile apps, Postman, server-to-server)
-    if (!origin) return callback(null, true);
-    if (ALLOWED_ORIGINS.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error(`CORS: Origin ${origin} not allowed`));
-  },
-  credentials: true,                        // required for cookies
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'accesstoken'],
-  exposedHeaders: ['Set-Cookie'],
-};
+// const corsOptions = {
+//   origin: (origin, callback) => {
+//     // Allow requests with no origin (e.g. mobile apps, Postman, server-to-server)
+//     if (!origin) return callback(null, true);
+//     if (ALLOWED_ORIGINS.includes(origin)) {
+//       return callback(null, true);
+//     }
+//     return callback(new Error(`CORS: Origin ${origin} not allowed`));
+//   },
+//   credentials: true,                        // required for cookies
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+//   allowedHeaders: ['Content-Type', 'Authorization', 'accesstoken'],
+//   exposedHeaders: ['Set-Cookie'],
+// };
 
-app.use(cors(corsOptions));
+
+
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://hrms-pannel.onrender.com"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 
 
 // ─── Body / cookie parsers ───────────────────────────────────────────────────
