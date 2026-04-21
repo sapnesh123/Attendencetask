@@ -61,7 +61,6 @@ export const getEmployeeDashboard = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get Employee Dashboard Error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',

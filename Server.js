@@ -84,10 +84,11 @@ app.use('/api', router);
 const adminBuildPath = path.join(process.cwd(), '../admin/build');
 if (fs.existsSync(adminBuildPath)) {
   app.use(express.static(adminBuildPath));
-  app.get('*', (req, res) => {
-    // Skip API routes
-    if (req.path.startsWith('/api')) return;
-    res.sendFile(path.join(adminBuildPath, 'index.html'));
+  app.use((req, res, next) => {
+    if (req.method === 'GET' && !req.path.startsWith('/api')) {
+      return res.sendFile(path.join(adminBuildPath, 'index.html'));
+    }
+    next();
   });
 }
 
