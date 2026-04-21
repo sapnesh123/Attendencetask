@@ -26,7 +26,7 @@ if (!fs.existsSync(logsDir)) {
 }
 
 // ─── Allowed Origins ─────────────────────────────────────────────────────────
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:3002,http://localhost:5173,http://localhost:3009,http://127.0.0.1:3009')
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'https://hrms-pannel.onrender.com,http://localhost:3002,http://localhost:5173,http://localhost:3009,http://127.0.0.1:3009')
   .split(',')
   .map((o) => o.trim());
 
