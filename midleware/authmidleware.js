@@ -2,8 +2,6 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
 import logger from '../helpers/logger.js';
 
-// NOTE: CORS headers are handled globally by express-cors in Server.js.
-// Do NOT set CORS headers manually here — it causes conflicts and breaks cookies.
 
 const protect = async (req, res, next) => {
   try {
