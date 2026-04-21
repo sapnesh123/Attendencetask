@@ -69,4 +69,9 @@ POST /api/auth/admin/create
   "role": "admin"
 }
 
+# important
+i have aready created admin like admin@gmail.com 1234567
+# important
+Admin can make employee as manager then we can add employee to manager's team
+
 
