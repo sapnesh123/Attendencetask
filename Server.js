@@ -12,6 +12,10 @@ import logger from './helpers/logger.js';
 
 // ─── Configure dotenv FIRST ─────────────────────────────────────────────────
 dotenv.config();
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // ─── Create required directories ─────────────────────────────────────────────────
 const uploadDir = './uploads';
@@ -81,15 +85,27 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api', router);
 
 // ─── Serve Frontend (Production) ─────────────────────────────────────────────
-const adminBuildPath = path.join(process.cwd(), '../admin/build');
-if (fs.existsSync(adminBuildPath)) {
+// ─── Serve Frontend (Production) ─────────────────────────────────────────────
+const possibleBuildPaths = [
+  path.join(process.cwd(), '../admin/build'),
+  path.join(process.cwd(), './admin/build'),
+  path.join(process.cwd(), 'admin/build'),
+  path.join(__dirname, '../admin/build')
+];
+
+let adminBuildPath = possibleBuildPaths.find(p => fs.existsSync(p));
+
+if (adminBuildPath) {
+  logger.info(`Serving admin frontend from: ${adminBuildPath}`);
   app.use(express.static(adminBuildPath));
   app.use((req, res, next) => {
-    if (req.method === 'GET' && !req.path.startsWith('/api')) {
+    if (req.method === 'GET' && !req.path.startsWith('/api') && !req.path.includes('.')) {
       return res.sendFile(path.join(adminBuildPath, 'index.html'));
     }
     next();
   });
+} else {
+  logger.warn('Admin build folder not found. SPA routing may not work.');
 }
 
 // ─── MongoDB ──────────────────────────────────────────────────────────────────
