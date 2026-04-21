@@ -87,10 +87,10 @@ app.use('/api', router);
 // ─── Serve Frontend (Production) ─────────────────────────────────────────────
 // ─── Serve Frontend (Production) ─────────────────────────────────────────────
 const possibleBuildPaths = [
-  path.join(process.cwd(), '../admin/build'),
-  path.join(process.cwd(), './admin/build'),
-  path.join(process.cwd(), 'admin/build'),
-  path.join(__dirname, '../admin/build')
+  path.join(__dirname, 'public'),             // Shared folder within server/
+  path.join(__dirname, '../admin/build'),     // Sibling admin/ folder
+  path.join(process.cwd(), 'admin/build'),    // Current working dir admin/
+  path.join(process.cwd(), 'public')          // Root level public/
 ];
 
 let adminBuildPath = possibleBuildPaths.find(p => fs.existsSync(p));
@@ -105,7 +105,7 @@ if (adminBuildPath) {
     next();
   });
 } else {
-  logger.warn('Admin build folder not found. SPA routing may not work.');
+  logger.warn('Admin build folder not found. SPA routing will not work on reload.');
 }
 
 // ─── MongoDB ──────────────────────────────────────────────────────────────────
