@@ -35,14 +35,7 @@ const protect = async (req, res, next) => {
       });
     }
 
-    // 4. Attach user to request
-    req.user = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      PSM: user.PSM || [],
-    };
+
 
     next();
   } catch (error) {
