@@ -1,42 +1,21 @@
 import Attendance from '../models/attendance.js';
 import User from '../models/user.js';
 import Overtime from '../models/overtime.js';
-
-const getStartOfDay = (date) => {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  return d;
-};
-
-const getEndOfDay = (date) => {
-  const d = new Date(date);
-  d.setHours(23, 59, 59, 999);
-  return d;
-};
-
-const getStartOfMonth = (date) => {
-  const d = new Date(date);
-  d.setDate(1);
-  d.setHours(0, 0, 0, 0);
-  return d;
-};
-
-const getEndOfMonth = (date) => {
-  const d = new Date(date);
-  d.setMonth(d.getMonth() + 1);
-  d.setDate(0);
-  d.setHours(23, 59, 59, 999);
-  return d;
-};
+import {
+  getStartOfDayIST,
+  getEndOfDayIST,
+  getStartOfMonthIST,
+  getEndOfMonthIST
+} from '../helpers/dateUtils.js';
 
 export const getEmployeeDashboard = async (req, res) => {
   try {
     const userId = req.user._id;
     const today = new Date();
-    const startOfDay = getStartOfDay(today);
-    const endOfDay = getEndOfDay(today);
-    const startOfMonth = getStartOfMonth(today);
-    const endOfMonth = getEndOfMonth(today);
+    const startOfDay = getStartOfDayIST(today);
+    const endOfDay = getEndOfDayIST(today);
+    const startOfMonth = getStartOfMonthIST(today);
+    const endOfMonth = getEndOfMonthIST(today);
 
     const todayAttendance = await Attendance.findOne({
       userId,
@@ -96,12 +75,12 @@ export const getManagerDashboard = async (req, res) => {
     const managerId = req.user._id;
     const { startDate, endDate } = req.query;
 
-    let start = getStartOfDay(new Date());
-    let end = getEndOfDay(new Date());
+    let start = getStartOfDayIST(new Date());
+    let end = getEndOfDayIST(new Date());
 
     if (startDate && endDate) {
-      start = getStartOfDay(new Date(startDate));
-      end = getEndOfDay(new Date(endDate));
+      start = getStartOfDayIST(new Date(startDate));
+      end = getEndOfDayIST(new Date(endDate));
     }
 
     const teamUsers = await User.find({
@@ -165,10 +144,11 @@ export const getManagerDashboard = async (req, res) => {
 export const getAdminDashboard = async (req, res) => {
   try {
     const today = new Date();
-    const startOfDay = getStartOfDay(today);
-    const endOfDay = getEndOfDay(today);
-    const startOfMonth = getStartOfMonth(today);
-    const endOfMonth = getEndOfMonth(today);
+    const startOfDay = getStartOfDayIST(today);
+    const endOfDay = getEndOfDayIST(today);
+    const startOfMonth = getStartOfMonthIST(today);
+    const endOfMonth = getEndOfMonthIST(today);
+    const userId = req.user._id;
 
     const totalEmployees = await User.countDocuments({ role: 'employee' });
     const totalManagers = await User.countDocuments({ role: 'manager' });

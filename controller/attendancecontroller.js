@@ -1,6 +1,10 @@
 import Attendance from '../models/attendance.js';
 import User from '../models/user.js';
 import Overtime from '../models/overtime.js';
+import {
+  getStartOfDayIST,
+  getEndOfDayIST
+} from '../helpers/dateUtils.js';
 
 const STANDARD_WORKING_HOURS = 8;
 
@@ -61,8 +65,8 @@ export const punchIn = async (req, res) => {
     }
 
     const today = new Date();
-    const startOfDay = getStartOfDay(today);
-    const endOfDay = getEndOfDay(today);
+    const startOfDay = getStartOfDayIST(today);
+    const endOfDay = getEndOfDayIST(today);
 
     const existingAttendance = await Attendance.findOne({
       userId,
@@ -146,8 +150,8 @@ export const punchOut = async (req, res) => {
     }
 
     const today = new Date();
-    const startOfDay = getStartOfDay(today);
-    const endOfDay = getEndOfDay(today);
+    const startOfDay = getStartOfDayIST(today);
+    const endOfDay = getEndOfDayIST(today);
 
     const attendance = await Attendance.findOne({
       userId,
@@ -212,8 +216,8 @@ export const getTodayAttendance = async (req, res) => {
   try {
     const userId = req.user._id;
     const today = new Date();
-    const startOfDay = getStartOfDay(today);
-    const endOfDay = getEndOfDay(today);
+    const startOfDay = getStartOfDayIST(today);
+    const endOfDay = getEndOfDayIST(today);
 
     const attendance = await Attendance.findOne({
       userId,
@@ -243,8 +247,8 @@ export const getMyAttendance = async (req, res) => {
 
     if (startDate && endDate) {
       query.date = {
-        $gte: getStartOfDay(new Date(startDate)),
-        $lte: getEndOfDay(new Date(endDate))
+        $gte: getStartOfDayIST(new Date(startDate)),
+        $lte: getEndOfDayIST(new Date(endDate))
       };
     }
 
@@ -314,8 +318,8 @@ export const getUserAttendance = async (req, res) => {
 
     if (startDate && endDate) {
       query.date = {
-        $gte: getStartOfDay(new Date(startDate)),
-        $lte: getEndOfDay(new Date(endDate))
+        $gte: getStartOfDayIST(new Date(startDate)),
+        $lte: getEndOfDayIST(new Date(endDate))
       };
     }
 
@@ -366,8 +370,8 @@ export const requestOvertime = async (req, res) => {
     }
 
     const today = new Date();
-    const startOfDay = getStartOfDay(today);
-    const endOfDay = getEndOfDay(today);
+    const startOfDay = getStartOfDayIST(today);
+    const endOfDay = getEndOfDayIST(today);
 
     const attendance = await Attendance.findOne({
       userId,

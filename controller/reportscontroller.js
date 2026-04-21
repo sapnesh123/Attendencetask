@@ -1,18 +1,12 @@
 import Attendance from '../models/attendance.js';
 import User from '../models/user.js';
 import Overtime from '../models/overtime.js';
+import {
+  getStartOfDayIST,
+  getEndOfDayIST
+} from '../helpers/dateUtils.js';
 
-const getStartOfDay = (date) => {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  return d;
-};
 
-const getEndOfDay = (date) => {
-  const d = new Date(date);
-  d.setHours(23, 59, 59, 999);
-  return d;
-};
 
 const generateCSV = (data, headers) => {
   const headerRow = headers.join(',');
@@ -41,8 +35,8 @@ export const getDailyAttendanceReport = async (req, res) => {
     const { date, userId } = req.query;
     const currentUser = req.user;
     const currentDate = date ? new Date(date) : new Date();
-    const startOfDay = getStartOfDay(currentDate);
-    const endOfDay = getEndOfDay(currentDate);
+    const startOfDay = getStartOfDayIST(currentDate);
+    const endOfDay = getEndOfDayIST(currentDate);
 
     const query = {
       date: { $gte: startOfDay, $lte: endOfDay }
@@ -110,8 +104,8 @@ export const getDateRangeAttendanceReport = async (req, res) => {
       });
     }
 
-    const start = getStartOfDay(parseDate(startDate));
-    const end = getEndOfDay(parseDate(endDate));
+    const start = getStartOfDayIST(parseDate(startDate));
+    const end = getEndOfDayIST(parseDate(endDate));
 
     const query = {
       date: { $gte: start, $lte: end }
@@ -185,8 +179,8 @@ export const exportAttendanceCSV = async (req, res) => {
       });
     }
 
-    const start = getStartOfDay(parseDate(startDate));
-    const end = getEndOfDay(parseDate(endDate));
+    const start = getStartOfDayIST(parseDate(startDate));
+    const end = getEndOfDayIST(parseDate(endDate));
 
     const query = {
       date: { $gte: start, $lte: end }
@@ -249,8 +243,8 @@ export const exportAttendanceExcel = async (req, res) => {
       });
     }
 
-    const start = getStartOfDay(parseDate(startDate));
-    const end = getEndOfDay(parseDate(endDate));
+    const start = getStartOfDayIST(parseDate(startDate));
+    const end = getEndOfDayIST(parseDate(endDate));
 
     const query = {
       date: { $gte: start, $lte: end }
@@ -313,8 +307,8 @@ export const exportAttendancePDF = async (req, res) => {
       });
     }
 
-    const start = getStartOfDay(parseDate(startDate));
-    const end = getEndOfDay(parseDate(endDate));
+    const start = getStartOfDayIST(parseDate(startDate));
+    const end = getEndOfDayIST(parseDate(endDate));
 
     const query = {
       date: { $gte: start, $lte: end }
@@ -428,8 +422,8 @@ export const getOvertimeReport = async (req, res) => {
 
     let start, end;
     if (startDate && endDate) {
-      start = getStartOfDay(parseDate(startDate));
-      end = getEndOfDay(parseDate(endDate));
+      start = getStartOfDayIST(parseDate(startDate));
+      end = getEndOfDayIST(parseDate(endDate));
     }
 
     const query = {};
