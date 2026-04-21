@@ -25,10 +25,7 @@ if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir, { recursive: true });
 }
 
-// ─── Allowed Origins ─────────────────────────────────────────────────────────
-// const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'https://hrms-pannel.onrender.com,http://localhost:3002,http://localhost:5173,http://localhost:3009,http://127.0.0.1:3009')
-//   .split(',')
-//   .map((o) => o.trim());
+
 
 // ─── Multer setup ─────────────────────────────────────────────────────────────
 const storage = multer.diskStorage({
@@ -46,20 +43,6 @@ global.upload = upload;
 
 const app = express();
 
-// const corsOptions = {
-//   origin: (origin, callback) => {
-//     // Allow requests with no origin (e.g. mobile apps, Postman, server-to-server)
-//     if (!origin) return callback(null, true);
-//     if (ALLOWED_ORIGINS.includes(origin)) {
-//       return callback(null, true);
-//     }
-//     return callback(new Error(`CORS: Origin ${origin} not allowed`));
-//   },
-//   credentials: true,                        // required for cookies
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-//   allowedHeaders: ['Content-Type', 'Authorization', 'accesstoken'],
-//   exposedHeaders: ['Set-Cookie'],
-// };
 
 
 
@@ -96,6 +79,17 @@ app.use('/uploads', express.static('uploads'));
 
 // ─── API Routes ───────────────────────────────────────────────────────────────
 app.use('/api', router);
+
+// ─── Serve Frontend (Production) ─────────────────────────────────────────────
+const adminBuildPath = path.join(process.cwd(), '../admin/build');
+if (fs.existsSync(adminBuildPath)) {
+  app.use(express.static(adminBuildPath));
+  app.get('*', (req, res) => {
+    // Skip API routes
+    if (req.path.startsWith('/api')) return;
+    res.sendFile(path.join(adminBuildPath, 'index.html'));
+  });
+}
 
 // ─── MongoDB ──────────────────────────────────────────────────────────────────
 const mongodb = async () => {
