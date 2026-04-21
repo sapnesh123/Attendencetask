@@ -102,7 +102,7 @@ const startServer = async () => {
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
       logger.info(`Server started successfully on port ${PORT}`);
-      console.log(`Allowed origins: ${ALLOWED_ORIGINS.join(', ')}`);
+      // console.log(`Allowed origins: ${ALLOWED_ORIGINS.join(', ')}`);
     });
   } catch (error) {
     logger.error('Server start error:', error);
